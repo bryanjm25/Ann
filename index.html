@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>For Klea Ann 🌷</title>
+  <!-- Poppins font as Avant Garde alternative -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --deep-green: #355935;
+      --message-bg: rgba(255, 255, 255, 0.96);
+      --close-btn-bg: #e94e77;
+      --close-btn-hover-bg: #c03a5a;
+      --leaf-green: #4ca16d;
+      --leaf-dark: #2e5d32;
+      --tulip-glow: rgba(255, 180, 220, 0.7);
+      /* Tulip colors */
+      --tulip-red: #e94e77;
+      --tulip-orange: #f7b267;
+      --tulip-yellow: #ffe156;
+      --tulip-pink: #e889b7;
+      --tulip-purple: #b97aff;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--deep-green);
+      color: white;
+      font-family: 'Poppins', 'Avant Garde', 'Century Gothic', 'Arial', sans-serif;
+      overflow-x: hidden;
+    }
+    #container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    #tulip-container {
+      width: 100%;
+      max-width: 650px;
+      height: 55vh;
+      min-height: 350px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+      overflow: visible;
+    }
+    .tulip {
+      position: absolute;
+      bottom: 0;
+      width: 70px;
+      filter: drop-shadow(0 0 14px var(--tulip-glow));
+      opacity: 0;
+      transform-origin: bottom center;
+      will-change: transform, filter, opacity;
+      cursor: default;
+      user-select: none;
+    }
+    /* Appreciation message popup */
+    #message-popup {
+      position: fixed;
+      top: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--message-bg);
+      color: var(--deep-green);
+      border-radius: 14px;
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);
+      padding: 2rem 2.2rem 1.5rem 2.2rem;
+      font-family: 'Poppins', 'Avant Garde', 'Century Gothic', 'Arial', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      max-width: 98vw;
+      width: 440px;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.8s cubic-bezier(.4, 0, .2, 1);
+      line-height: 1.6;
+      letter-spacing: 0.01em;
+      user-select: none;
+    }
+    #message-popup.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #close-btn {
+      position: absolute;
+      top: 0.7rem;
+      right: 1rem;
+      background: var(--close-btn-bg);
+      border: none;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    #close-btn:hover {
+      background: var(--close-btn-hover-bg);
+    }
+    @media (max-width: 700px) {
+      #tulip-container {
+        max-width: 98vw;
+      }
+      .tulip {
+        width: 48px;
+      }
+      #message-popup {
+        font-size: 1rem;
+        width: 97vw;
+      }
+    }
+    @media (max-width: 400px) {
+      .tulip {
+        width: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Appreciation message popup -->
+  <div id="message-popup" role="dialog" aria-live="polite" aria-label="Appreciation message">
+    <button id="close-btn" aria-label="Close message">&times;</button>
+    <div id="message-text">
+      To Klea Ann:<br /><br />
+      Hello babe, gusto ko lang sabihin na naa-appreciate kita lagi, I am grateful to have you in my life, kahit lagi kitang inaaway. You inspire me, proud ako sa'yo lagi. I feel lucky to have you in my life, sharing laughs, supporting each other, and creating memories together. You truly are a wonderful person, and I’m grateful for you every single day.
+    </div>
+  </div>
+  <div id="container">
+    <div id="tulip-container" aria-label="Growing tulip flowers"></div>
+  </div>
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    // Tulip data: position (percent from left), color, max height (vh), animation delays and sway angles, z-index
+    const tulips = [
+      { x: 0.05, color: 'var(--tulip-yellow)', maxHeightVh: 48, delay: 0.1, swayAngle: 12, z: 6 },
+      { x: 0.14, color: 'var(--tulip-orange)', maxHeightVh: 55, delay: 0.3, swayAngle: -10, z: 4 },
+      { x: 0.22, color: 'var(--tulip-red)', maxHeightVh: 50, delay: 0.5, swayAngle: 8, z: 7 },
+      { x: 0.31, color: 'var(--tulip-pink)', maxHeightVh: 42, delay: 0.7, swayAngle: -14, z: 3 },
+      { x: 0.40, color: 'var(--tulip-purple)', maxHeightVh: 58, delay: 0.9, swayAngle: 10, z: 8 },
+      { x: 0.50, color: 'var(--tulip-yellow)', maxHeightVh: 53, delay: 1.1, swayAngle: -9, z: 5 },
+      { x: 0.60, color: 'var(--tulip-orange)', maxHeightVh: 47, delay: 1.3, swayAngle: 11, z: 6 },
+      { x: 0.70, color: 'var(--tulip-red)', maxHeightVh: 56, delay: 1.5, swayAngle: -8, z: 7 },
+      { x: 0.80, color: 'var(--tulip-pink)', maxHeightVh: 44, delay: 1.7, swayAngle: 13, z: 4 },
+      { x: 0.90, color: 'var(--tulip-purple)', maxHeightVh: 52, delay: 1.9, swayAngle: -11, z: 5 },
+    ];
+
+    // Detailed tulip SVG with layered, shaped petals and longer stem & improved leaves
+    function tulipSVG(color, heightScale = 1) {
+      const stemHeight = 120 * heightScale; // longer stem
+      const stemY = 70 + (120 - stemHeight);
+      const flowerY = stemY - 40 * heightScale;
+      return `
+      <svg viewBox="0 0 80 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+        <!-- Leaves with improved shape -->
+        <path d="M40 140 Q5 160 25 200 Q30 180 40 165" fill="var(--leaf-green)" stroke="var(--leaf-dark)" stroke-width="3" />
+        <path d="M40 140 Q75 160 55 200 Q50 180 40 165" fill="var(--leaf-green)" stroke="var(--leaf-dark)" stroke-width="3" />
+        <!-- Stem -->
+        <rect x="36" y="${stemY}" width="8" height="${stemHeight}" rx="4" fill="var(--leaf-dark)" />
+        <!-- Flower base shadow -->
+        <ellipse cx="40" cy="${flowerY + 45}" rx="22" ry="8" fill="#0003" />
+        <!-- Petals: layered, shaped with curves for realism -->
+        <path d="M40 ${flowerY} 
+          C 20 ${flowerY - 40}, 10 ${flowerY + 20}, 40 ${flowerY + 40}
+          C 70 ${flowerY + 20}, 60 ${flowerY - 40}, 40 ${flowerY} Z" 
+          fill="${color}" stroke="#9b2a56" stroke-width="3" />
+        <path d="M40 ${flowerY + 5} 
+          C 30 ${flowerY - 20}, 25 ${flowerY + 15}, 40 ${flowerY + 35}
+          C 55 ${flowerY + 15}, 50 ${flowerY - 20}, 40 ${flowerY + 5} Z" 
+          fill="#fff2" />
+        <path d="M40 ${flowerY + 10} 
+          C 35 ${flowerY - 10}, 33 ${flowerY + 10}, 40 ${flowerY + 28}
+          C 47 ${flowerY + 10}, 45 ${flowerY - 10}, 40 ${flowerY + 10} Z" 
+          fill="${color}" stroke="#9b2a56" stroke-width="1.5" />
+      </svg>`;
+    }
+
+    const tulipContainer = document.getElementById('tulip-container');
+
+    // Create tulip elements with absolute positioning and initial styles
+    tulips.forEach(({ x, color, maxHeightVh, delay, swayAngle, z }) => {
+      const tulip = document.createElement('div');
+      tulip.className = 'tulip';
+      tulip.style.left = `${x * 100}%`;
+      tulip.style.zIndex = z;
+      tulip.style.height = `${maxHeightVh}vh`;
+      tulip.style.transformOrigin = 'bottom center';
+      tulip.style.opacity = '0';
+      tulip.style.transform = 'scaleY(0) translateY(80px)';
+      tulip.innerHTML = tulipSVG(color, maxHeightVh / 58); // scale relative to base 58vh
+      tulipContainer.appendChild(tulip);
+    });
+
+    function animateTulips() {
+      const tulipEls = document.querySelectorAll('.tulip');
+
+      tulipEls.forEach((tulip, i) => {
+        const { delay, swayAngle } = tulips[i];
+
+        // Grow tulip upward with scaleY and translateY
+        gsap.to(tulip, {
+          delay,
+          duration: 1.8,
+          opacity: 1,
+          scaleY: 1,
+          translateY: 0,
+          ease: "power3.out",
+          onComplete: () => {
+            // Entangle animation: gentle horizontal and rotational oscillations with varied timing
+            gsap.to(tulip, {
+              x: `+=${(Math.random() * 12 - 6)}`, // horizontal oscillation
+              rotation: swayAngle,
+              yoyo: true,
+              repeat: -1,
+              duration: 3 + Math.random() * 2,
+              ease: "sine.inOut",
+              transformOrigin: "bottom center"
+            });
+            gsap.to(tulip, {
+              y: `+=${(Math.random() * 6 - 3)}`, // subtle vertical oscillation
+              yoyo: true,
+              repeat: -1,
+              duration: 4 + Math.random() * 2,
+              ease: "sine.inOut"
+            });
+          }
+        });
+      });
+    }
+
+    // Show message after tulips finish growing (~3.5s)
+    function showMessage() {
+      document.getElementById('message-popup').classList.add('visible');
+    }
+
+    // Close button hides message
+    document.getElementById('close-btn').onclick = () => {
+      document.getElementById('message-popup').classList.remove('visible');
+    };
+
+    window.addEventListener('load', () => {
+      animateTulips();
+      setTimeout(showMessage, 3500);
+    });
+  </script>
+</body>
+</html>
